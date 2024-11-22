@@ -51,7 +51,7 @@ class FileStorage:
         else:
             return sum(
                     1 for k in self.__objects.keys()
-                    if str(cls) in k
+                    if str(cls) == k.split('.')[0]
                 )
 
     def new(self, obj):
