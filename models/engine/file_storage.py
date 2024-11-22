@@ -51,7 +51,7 @@ class FileStorage:
         else:
             return sum(
                     1 for k in self.__objects.keys()
-                    if eval(cls) in k
+                    if cls in k
                 )
 
     def new(self, obj):
