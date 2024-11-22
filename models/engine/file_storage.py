@@ -49,10 +49,7 @@ class FileStorage:
         if cls is None:
             return len(self.__objects)
         else:
-            return sum(
-                    1 for k in self.__objects.keys()
-                    if str(cls) == k.split('.')[0]
-                )
+            return len(self.all(cls))
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
