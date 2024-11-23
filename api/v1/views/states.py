@@ -2,7 +2,7 @@
 """handles all default RESTFul API actions"""
 from . import app_views
 from models.state import State
-from flask import jsonify, abort, request
+from flask import jsonify, abort, request, make_response
 from models import storage
 
 
@@ -56,9 +56,9 @@ def create_state():
     json_body = request.get_json()
 
     if not json_body:
-        return jsonify({"error": "Not a JSON"}), 400
+        return make_repsonse(jsonify({"error": "Not a JSON"}), 400)
     if 'name' not in json_body:
-        return jsonify({"error": "Missing name"}), 400
+        return make_response(jsonify({"error": "Missing name"}), 400)
 
     state = State(**json_body)
     state.save()
@@ -76,7 +76,8 @@ def update_state(state_id):
     json_body = request.get_json()
 
     if not json_body:
-        return jsonify({"error": "Not a JSON"}), 400
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+
     if not state:
         abort(404)
 
