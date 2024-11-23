@@ -72,12 +72,13 @@ def create_state():
     )
 def update_state(state_id):
     """Updates a State object"""
-    state = storage.get(State, state_id)
+
     json_body = request.get_json()
 
     if not json_body:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
 
+    state = storage.get(State, state_id)
     if not state:
         abort(404)
 
@@ -85,6 +86,6 @@ def update_state(state_id):
         if k not in ['id', 'created_at', 'updated']:
             setattr(state, k, v)
 
-    state.save()
+    storage.save()
 
     return jsonify(state.to_dict()), 200
