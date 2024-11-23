@@ -56,7 +56,7 @@ def create_state():
     json_body = request.get_json()
 
     if not json_body:
-        return make_repsonse(jsonify({"error": "Not a JSON"}), 400)
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
     if 'name' not in json_body:
         return make_response(jsonify({"error": "Missing name"}), 400)
 
