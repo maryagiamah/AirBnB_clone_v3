@@ -61,9 +61,9 @@ def delete_amenity(amenity_id):
 def create_amenity():
     """Creates a amenity"""
 
-    json_body = request.get_json()
-
-    if not json_body:
+    try:
+        json_body = request.get_json()
+    except Exception:
         return jsonify({"error": "Not a JSON"}), 400
 
     if 'name' not in json_body:
@@ -88,9 +88,9 @@ def update_amenity(amenity_id):
     if not amenity:
         abort(404)
 
-    json_body = request.get_json()
-
-    if not json_body:
+    try:
+        json_body = request.get_json()
+    except Exception:
         return jsonify({"error": "Not a JSON"}), 400
 
     for k, v in json_body.items():
