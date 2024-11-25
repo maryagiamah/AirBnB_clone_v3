@@ -4,7 +4,7 @@ from . import app_views
 from models.place import Place
 from models.review import Review
 from models.user import User
-from flask import jsonify, abort, request, make_response
+from flask import jsonify, abort, request
 from models import storage
 
 
@@ -74,18 +74,18 @@ def create_review(place_id):
     if not place:
         abort(404)
 
-    json_body = request.get_json()
-
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
     if 'user_id' not in json_body:
-        return make_response(jsonify({"error": "Missing user_id"}))
+        return jsonify({"error": "Missing user_id"}), 400
     if not storage.get(User, json_body.get('user_id')):
         abort(404)
 
     if 'text' not in json_body:
-        return make_response(jsonify({"error": "Missing text"}), 400)
+        return jsonify({"error": "Missing text"}), 400
 
     review = Review(**json_body)
     review.save()
@@ -106,10 +106,10 @@ def update_review(review_id):
     if not review:
         abort(404)
 
-    json_body = request.get_json()
-
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
     for k, v in json_body.items():
         if k not in ['id', 'user_id', 'place_id', 'created_at', 'updated']:

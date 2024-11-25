@@ -3,7 +3,7 @@
 from . import app_views
 from models.state import State
 from models.city import City
-from flask import jsonify, abort, request, make_response
+from flask import jsonify, abort, request
 from models import storage
 
 
@@ -69,14 +69,17 @@ def create_city(state_id):
     """Creates a city"""
 
     state = storage.get(State, state_id)
-    json_body = request.get_json()
 
     if not state:
         abort(404)
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
+
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
+
     if 'name' not in json_body:
-        return make_response(jsonify({"error": "Missing name"}), 400)
+        return jsonify({"error": "Missing name"}), 400
 
     json_body["state_id"] = state_id
     city = City(**json_body)
@@ -98,10 +101,10 @@ def update_city(city_id):
     if not city:
         abort(404)
 
-    json_body = request.get_json()
-
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
     for k, v in json_body.items():
         if k not in ['id', 'state_id', 'created_at', 'updated']:

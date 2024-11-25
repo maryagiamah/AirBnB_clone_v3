@@ -2,7 +2,7 @@
 """handles all default RESTFul API actions"""
 from . import app_views
 from models.user import User
-from flask import jsonify, abort, request, make_response
+from flask import jsonify, abort, request
 from models import storage
 
 
@@ -56,14 +56,15 @@ def delete_user(user_id):
     )
 def create_user():
     """Creates a user"""
-    json_body = request.get_json()
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
     if 'email' not in json_body:
-        return make_response(jsonify({"error": "Missing email"}), 400)
+        return jsonify({"error": "Missing email"}), 400
     if 'password' not in json_body:
-        return make_response(jsonify({"error": "Missing pasword"}), 400)
+        return jsonify({"error": "Missing pasword"}), 400
 
     user = User(**json_body)
     user.save()
@@ -84,10 +85,10 @@ def update_user(user_id):
     if not user:
         abort(404)
 
-    json_body = request.get_json()
-
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
     for k, v in json_body.items():
         if k not in ['id', 'email', 'created_at', 'updated']:
