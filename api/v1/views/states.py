@@ -53,10 +53,11 @@ def delete_state(state_id):
     )
 def create_state():
     """Creates a state"""
-    json_body = request.get_json()
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
     if 'name' not in json_body:
         return make_response(jsonify({"error": "Missing name"}), 400)
 
@@ -73,14 +74,15 @@ def create_state():
 def update_state(state_id):
     """Updates a State object"""
 
-    json_body = request.get_json()
-
-    if not json_body:
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
-
     state = storage.get(State, state_id)
+
     if not state:
         abort(404)
+
+    try:
+        json_body = request.get_json()
+    except Exception:
+        return jsonify({"error": "Not a JSON"}), 400
 
     for k, v in json_body.items():
         if k not in ['id', 'created_at', 'updated']:
