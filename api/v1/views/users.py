@@ -56,10 +56,11 @@ def delete_user(user_id):
     )
 def create_user():
     """Creates a user"""
-    try:
-        json_body = request.get_json()
-    except Exception:
+
+    if not request.get_json():
         return jsonify({"error": "Not a JSON"}), 400
+
+    json_body = request.get_json()
 
     if 'email' not in json_body:
         return jsonify({"error": "Missing email"}), 400
@@ -85,10 +86,10 @@ def update_user(user_id):
     if not user:
         abort(404)
 
-    try:
-        json_body = request.get_json()
-    except Exception:
+    if not request.get_json():
         return jsonify({"error": "Not a JSON"}), 400
+
+    json_body = request.get_json()
 
     for k, v in json_body.items():
         if k not in ['id', 'email', 'created_at', 'updated']:

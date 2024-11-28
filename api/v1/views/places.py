@@ -74,10 +74,10 @@ def create_place(city_id):
     if not city:
         abort(404)
 
-    try:
-        json_body = request.get_json()
-    except Exception:
+    if not request.get_json():
         return jsonify({"error": "Not a JSON"}), 400
+
+    json_body = request.get_json()
 
     if 'user_id' not in json_body:
         return jsonify({"error": "Missing user_id"}), 400
@@ -106,10 +106,10 @@ def update_place(place_id):
     if not place:
         abort(404)
 
-    try:
-        json_body = request.get_json()
-    except Exception:
+    if not request.get_json():
         return jsonify({"error": "Not a JSON"}), 400
+
+    json_body = request.get_json()
 
     for k, v in json_body.items():
         if k not in ['id', 'user_id', 'city_id', 'created_at', 'updated']:
